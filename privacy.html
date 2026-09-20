@@ -33,7 +33,7 @@
 
 <header>
   <h1>빌리어드 코치 개인정보처리방침</h1>
-  <p class="sub">최종 수정일: 2026년 9월 19일 · 앱 버전 1.0.0</p>
+  <p class="sub">최종 수정일: 2026년 9월 20일 · 앱 버전 1.0.0</p>
 </header>
 
 <p>빌리어드 코치(이하 "앱")는 개인을 식별할 수 있는 정보를 수집하지 않습니다. 회원가입이 없고,
@@ -80,12 +80,13 @@
 
 <h3>검증 서버가 저장하는 것</h3>
 
-<p>검증 서버는 구매 토큰의 <strong>원문을 저장하지 않습니다.</strong> 저장하는 항목은 다음 네 가지뿐입니다.</p>
+<p>검증 서버는 구매 토큰의 <strong>원문을 저장하지 않습니다.</strong> 저장하는 항목은 다음 다섯 가지뿐입니다.</p>
 
 <ul>
   <li>구매 토큰의 <code>SHA-256</code> 해시 (원문 복원 불가)</li>
   <li>상품 ID (예: <code>diamonds_10</code>)</li>
   <li>스토어 주문 ID</li>
+  <li>플랫폼 (<code>android</code> 또는 <code>ios</code>)</li>
   <li>검증 시각</li>
 </ul>
 
@@ -96,10 +97,15 @@
 
 <ul>
   <li><strong>인터넷</strong> · <strong>네트워크 상태</strong> — 광고를 불러오고 결제를 확인하기 위해</li>
+  <li><strong>광고 ID</strong>(<code>AD_ID</code>) 및 구글 <em>Privacy Sandbox</em> 관련 권한
+      (<code>ACCESS_ADSERVICES_AD_ID</code> · <code>_ATTRIBUTION</code> · <code>_TOPICS</code>)
+      — Google AdMob SDK가 포함하는 것으로, 위 2절에 적은 광고 식별자를 쓰기 위한 것입니다</li>
+  <li><code>WAKE_LOCK</code> · <code>FOREGROUND_SERVICE</code> — Google Play 서비스가 포함합니다</li>
 </ul>
 
-<p>그 밖의 권한(위치, 카메라, 마이크, 연락처, 사진, 파일, 저장소)은 요구하지 않습니다.
-공략 계산은 전부 휴대폰 안에서 이루어지며, 공 배치는 서버로 전송되지 않습니다.</p>
+<p>이 중 사용자에게 별도로 묻는(위험) 권한은 하나도 없습니다. 그 밖의 권한(위치, 카메라, 마이크,
+연락처, 사진, 파일, 저장소)은 요구하지 않습니다. 공략 계산은 전부 휴대폰 안에서 이루어지며,
+공 배치는 서버로 전송되지 않습니다.</p>
 
 <h2>4. 분석 도구를 쓰지 않습니다</h2>
 
@@ -131,7 +137,7 @@
 <!-- ============================ English ============================ -->
 <div class="lang">
 <h1>Billiard Coach Privacy Policy</h1>
-<p class="sub">Last updated: 19 September 2026 · App version 1.0.0</p>
+<p class="sub">Last updated: 20 September 2026 · App version 1.0.0</p>
 
 <p>Billiard Coach (the "app") collects no personally identifiable information. There is no
 sign-up and no account; the app never asks for your name, email, phone number, location,
@@ -169,13 +175,18 @@ information, described in full below.</p>
 </table>
 
 <p>The verification server does <strong>not</strong> store the purchase token itself. It stores
-only a <code>SHA-256</code> hash of it, the product ID, the store order ID and a timestamp. No
-name, email, device identifier or advertising ID is sent to or stored on that server.</p>
+only a <code>SHA-256</code> hash of it, the product ID, the store order ID, the platform
+(<code>android</code> or <code>ios</code>) and a timestamp. No name, email, device identifier or
+advertising ID is sent to or stored on that server.</p>
 
 <h2>3. Permissions</h2>
-<p>Internet and network state, for ads and purchase verification. Nothing else: no location,
-camera, microphone, contacts, photos or file access. All shot calculation runs on the device;
-your ball positions are never uploaded.</p>
+<p>Internet and network state, for ads and purchase verification. The Google AdMob SDK also
+declares the advertising-ID permission (<code>AD_ID</code>) and Google's Privacy Sandbox
+permissions, for the advertising identifier described in section 2, and Google Play services
+declare <code>WAKE_LOCK</code> and <code>FOREGROUND_SERVICE</code>. None of these prompt you:
+there is no dangerous permission in the app. Nothing else: no location, camera, microphone,
+contacts, photos or file access. All shot calculation runs on the device; your ball positions
+are never uploaded.</p>
 
 <h2>4. No analytics</h2>
 <p>The app contains no analytics or crash-reporting SDK — no Firebase Analytics, no Crashlytics.

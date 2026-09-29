@@ -25,6 +25,7 @@
   code { background: #1E2421; padding: 1px 5px; border-radius: 4px; font-size: 13.5px; }
   .lang { margin: 40px 0 0; padding-top: 28px; border-top: 1px solid #2A322D; }
   footer { margin-top: 44px; color: #7E8781; font-size: 13.5px; }
+  footer a { color: #A6AEA8; }
   .note { background: #181D1A; border-left: 3px solid #4CC38A; padding: 10px 14px; margin: 14px 0; }
 </style>
 </head>
@@ -52,6 +53,7 @@
   <li>물리 보정값, 언어·소리·글자 크기 설정</li>
   <li>하트·다이아 잔액과 충전 시각, 프리미엄 보유 여부</li>
   <li>하트 충전 시간을 확인하려고 적어 두는 시계 기록 (안드로이드: 휴대폰이 켜진 뒤 흐른 시간과 켜진 횟수)</li>
+  <li>별점 요청을 언제 띄울지 정하려고 세는 공략 찾기 횟수와 앱을 처음 연 날짜</li>
 </ul>
 
 <div class="note">
@@ -63,9 +65,9 @@
 <table>
   <tr><th>무엇</th><th>누가</th><th>왜</th></tr>
   <tr>
-    <td>광고 식별자(AAID), 기기·앱·네트워크 정보, 대략적인 위치(IP 기반 국가 수준)</td>
+    <td>광고 식별자(AAID)·앱 세트 ID, 기기·앱·네트워크 정보, 대략적인 위치(IP 기반), 앱 사용 정보(앱 실행·광고 탭·동영상 시청), 진단 정보(앱 실행 시간·멈춤 비율 등)</td>
     <td>Google AdMob</td>
-    <td>하트를 받기 위해 <em>사용자가 직접 선택해</em> 보는 보상형 광고를 게재하고, 광고 부정 사용을 막기 위해</td>
+    <td>하트를 받기 위해 <em>사용자가 직접 선택해</em> 보는 보상형 광고를 게재하고(앱을 열면 광고를 미리 준비합니다), 광고 성과를 측정하고, 광고 부정 사용을 막기 위해</td>
   </tr>
   <tr>
     <td>결제 수단 정보, 구매 내역</td>
@@ -76,6 +78,11 @@
     <td>구매 토큰(영수증), 상품 ID, 주문 ID</td>
     <td>앱 운영자의 검증 서버(Supabase, 서울 리전)</td>
     <td>결제가 실제로 완료된 것인지 스토어(구글 · 애플)에 확인하고, <strong>같은 영수증이 두 번 사용되는 것을 막기 위해</strong></td>
+  </tr>
+  <tr>
+    <td>오류 기록: 앱 버전, 운영체제 종류(안드로이드 · 아이폰)와 버전, 휴대폰 언어, 오류 내용(메시지와 코드 위치)</td>
+    <td>앱 운영자의 서버(Supabase, 서울 리전)</td>
+    <td>앱에서 난 오류를 찾아 고치기 위해. 기기 식별자 · 광고 ID · 결제 정보 · 공 배치는 담지 않으며, IP 주소도 저장하지 않습니다. 같은 오류는 하루 한 줄로 횟수만 셉니다.</td>
   </tr>
 </table>
 
@@ -94,6 +101,9 @@
 <p>이 기록만으로는 어떤 개인이 무엇을 샀는지 알 수 없습니다. 이름·이메일·기기 식별자·광고 ID는
 전송되지도, 저장되지도 않습니다. 이 표는 앱에서 읽을 수 없도록 잠겨 있으며, 검증 함수만 접근합니다.</p>
 
+<p>결제 확인 서버는 요청이 한꺼번에 몰리는 것을 막으려고, 요청한 곳의 인터넷 주소(IP)를 비밀 값으로 섞어 되돌릴 수
+없게 만든 값을 약 10분 동안만 보관한 뒤 자동으로 지웁니다. 인터넷 주소 자체는 저장하지 않습니다.</p>
+
 <h2>3. 앱이 요구하는 권한</h2>
 
 <ul>
@@ -111,7 +121,9 @@
 <h2>4. 분석 도구를 쓰지 않습니다</h2>
 
 <p>Firebase Analytics, Crashlytics를 비롯한 어떤 사용 행태 분석·추적 도구도 넣지 않았습니다.
-앱은 사용자가 어떤 화면을 봤는지, 무엇을 눌렀는지 수집하지 않습니다.</p>
+앱은 사용자가 어떤 화면을 봤는지, 무엇을 눌렀는지 수집하지 않습니다(2절의 광고 SDK가 광고와 관련해 모으는
+앱 실행 · 광고 탭 정보는 예외입니다).
+다만 2절의 오류 기록(이름표 없음)은 앱 운영자의 서버로 보냅니다.</p>
 
 <h2>5. 보관과 삭제</h2>
 
@@ -119,6 +131,7 @@
   <li><strong>기기 데이터</strong>: 앱 삭제 시 함께 삭제됩니다. 앱 안에서 ︙ → 기본 배치로 를 누르면 배치가 초기화됩니다.</li>
   <li><strong>검증 기록(해시)</strong>: 중복 사용 방지라는 목적상 보관합니다. 개인을 식별하지 않으므로
       특정인의 기록을 지정해 삭제하기 어렵습니다. 스토어 주문 ID를 알려 주시면 해당 기록을 삭제해 드립니다.</li>
+  <li><strong>오류 기록</strong>: 90일 뒤 자동으로 삭제됩니다. 누구의 기록인지 알 수 없어 특정인의 기록을 골라 지울 수는 없습니다.</li>
   <li><strong>광고 식별자</strong>: 안드로이드 설정 → 개인정보 보호 → 광고 에서 언제든 재설정하거나 삭제할 수 있습니다.</li>
 </ul>
 
@@ -154,6 +167,8 @@ information, described in full below.</p>
   <li>Heart and diamond balances, and whether the one-time unlock is owned</li>
   <li>A clock record used to check heart refills (on Android: the time since the phone was
       switched on, and how many times it has been)</li>
+  <li>How many answers you have had and the day you first opened the app, to time the store's
+      rating request</li>
 </ul>
 <p>None of this leaves the phone, and uninstalling the app deletes it.</p>
 
@@ -161,9 +176,9 @@ information, described in full below.</p>
 <table>
   <tr><th>What</th><th>Who</th><th>Why</th></tr>
   <tr>
-    <td>Advertising ID (AAID), device/app/network information, coarse country-level location from IP</td>
+    <td>Advertising ID (AAID) and app set ID, device/app/network information, approximate location from IP, app interactions (app launch, ad taps, video views), diagnostics (launch time, hang rate and the like)</td>
     <td>Google AdMob</td>
-    <td>To serve the rewarded ads you choose to watch in exchange for hearts, and to prevent ad fraud</td>
+    <td>To serve the rewarded ads you choose to watch in exchange for hearts (an ad is prepared when the app opens), to measure ad performance, and to prevent ad fraud</td>
   </tr>
   <tr>
     <td>Payment details and purchase history</td>
@@ -175,12 +190,21 @@ information, described in full below.</p>
     <td>The developer's verification server (Supabase, Seoul region)</td>
     <td>To confirm with the store (Google or Apple) that a purchase was really paid for, and to stop one receipt being redeemed twice</td>
   </tr>
+  <tr>
+    <td>Error reports: app version, operating system (Android/iOS) and its version, the phone's language, the error's message and code location</td>
+    <td>The developer's server (Supabase, Seoul region)</td>
+    <td>To find and fix errors in the app. They carry no device identifier, advertising ID, payment data or ball positions, and no IP address is stored. The same error is kept as one line per day with a count.</td>
+  </tr>
 </table>
 
 <p>The verification server does <strong>not</strong> store the purchase token itself. It stores
 only a <code>SHA-256</code> hash of it, the product ID, the store order ID, the platform
 (<code>android</code> or <code>ios</code>) and a timestamp. No name, email, device identifier or
 advertising ID is sent to or stored on that server.</p>
+
+<p>To stop the purchase-check server from being flooded, it keeps a salted, irreversible hash of the
+caller's IP address for about ten minutes and then deletes it automatically. The IP address itself
+is never stored.</p>
 
 <h2>3. Permissions</h2>
 <p>Internet and network state, for ads and purchase verification. The Google AdMob SDK also
@@ -193,13 +217,17 @@ are never uploaded.</p>
 
 <h2>4. No analytics</h2>
 <p>The app contains no analytics or crash-reporting SDK — no Firebase Analytics, no Crashlytics.
-It does not record which screens you view or what you tap.</p>
+It does not record which screens you view or what you tap (apart from the app launches and ad taps the ad SDK in
+section 2 collects around its ads). The app does send the anonymous error
+reports described in section 2 to the developer's own server.</p>
 
 <h2>5. Retention and deletion</h2>
 <ul>
   <li><strong>Device data</strong>: deleted when you uninstall the app.</li>
   <li><strong>Verification records</strong>: kept, because preventing re-use is their purpose. They
       identify no one. Send your store order ID and the matching record will be deleted.</li>
+  <li><strong>Error reports</strong>: deleted automatically after 90 days. They identify no one, so one
+      person's reports cannot be picked out and deleted.</li>
   <li><strong>Advertising ID</strong>: you can reset or delete it in Android
       Settings → Privacy → Ads at any time.</li>
 </ul>
@@ -216,7 +244,8 @@ the app's release notes.</p>
 </div>
 
 <footer>
-  빌리어드 코치 · Billiard Coach — 당구 공략 추천 · 13종목
+  <a href="index.html">빌리어드 코치 · Billiard Coach</a> ·
+  <a href="faq.html">자주 묻는 질문 · FAQ</a>
 </footer>
 
 </main>

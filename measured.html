@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>잰 것들 · 빌리어드 코치</title>
+<meta name="description" content="빌리어드 코치가 계산하는 확률이 어디서 나온 숫자인지. 실제로 돌려서 센 값과, 재 보고 지운 기능들.">
+<style>
+  :root { color-scheme: dark; }
+  body {
+    margin: 0; padding: 0 20px 80px;
+    background: #121614; color: #F3F1EA;
+    font: 16px/1.7 -apple-system, "Segoe UI", "Malgun Gothic", "Noto Sans KR", sans-serif;
+  }
+  main { max-width: 680px; margin: 0 auto; }
+  header { padding: 72px 0 12px; }
+  h1 { font-size: 30px; margin: 0 0 4px; letter-spacing: -0.5px; }
+  .tag { color: #4CC38A; font-size: 17px; margin: 0 0 4px; }
+  .sub { color: #A6AEA8; font-size: 14.5px; margin: 0; }
+  h2 { font-size: 18px; margin: 44px 0 6px; }
+  h2 + .lead { color: #A6AEA8; font-size: 14.5px; margin: 0 0 18px; }
+  p, li { color: #D6DAD6; }
+  a { color: #4CC38A; }
+  .item { border-top: 1px solid #2A322D; padding: 18px 0 2px; }
+  .n { color: #4CC38A; font-size: 24px; font-weight: 700; letter-spacing: -0.5px;
+       line-height: 1.25; display: block; margin-bottom: 4px; }
+  .n .unit { color: #A6AEA8; font-size: 15px; font-weight: 600; letter-spacing: 0; }
+  .item p { margin: 0 0 6px; }
+  .src { color: #7E8781; font-size: 13px; margin: 0 0 4px; }
+  .src code { color: #8FA397; font-size: 12.5px; }
+  .note { border-left: 2px solid #2A322D; padding: 2px 0 2px 14px;
+          color: #A6AEA8; font-size: 14.5px; margin: 22px 0; }
+  footer { margin-top: 56px; padding-top: 22px; border-top: 1px solid #2A322D;
+           color: #7E8781; font-size: 13.5px; }
+  footer a { color: #A6AEA8; }
+</style>
+</head>
+<body>
+<main>
+
+<header>
+  <h1>잰 것들</h1>
+  <p class="tag">확률을 말하는 앱이라면, 그 숫자가 어디서 왔는지도 말해야 합니다</p>
+  <p class="sub">아래는 전부 실제로 돌려서 센 값입니다</p>
+</header>
+
+<p>이 앱은 샷마다 성공 확률을 계산하고, 화면에는 그 숫자를 <strong>쉬움 · 보통 · 어려움</strong> 막대로
+보여 줍니다. 그런 숫자는 적기는 쉽고 확인하기는 어렵습니다. 그래서 개발하면서 무엇을 어떻게 쟀는지 남겨 뒀고, 이 페이지에 그중 몇 개를 옮겼습니다.
+<strong>자랑할 것만 고르지 않았습니다</strong> — 재 보고 지운 기능, 내가 만든 버그를 숫자로 잡은
+기록이 절반입니다.</p>
+
+<h2>재 보고 지운 것들</h2>
+<p class="lead">만들어 놓고 측정한 뒤 들어내는 게, 못 지키는 약속을 파는 것보다 낫습니다.</p>
+
+<div class="item">
+  <span class="n">89%</span>
+  <p><strong>보크라인 전용 카드를 만들었다가 지웠습니다.</strong> "칸 밖으로 공을 빼내는 길 중
+  확률이 가장 높은 것"을 따로 보여 주는 카드였는데, 제약이 걸린 배치 12개에서 재 보니 앱이 이미
+  찾아 놓은 경로의 <strong>89%가 어차피 공을 칸 밖으로 내보내고</strong> 있었습니다. 그런 경로가
+  아예 없던 배치는 12개 중 0개. 그러니 그 카드는 거의 항상 1위 경로와 같은 걸 가리켰을 겁니다.
+  대신 반대쪽 드문 경우 — 두 공을 칸 안에 남기는 길 — 에 <b>칸 안</b> 표시를 붙였습니다.</p>
+  <p class="src">근거: <code>README.md</code> · 배치 12개 측정표</p>
+</div>
+
+<div class="item">
+  <span class="n">0.72 → 0.35</span>
+  <p><strong>"두 수 앞을 보여 주는" 기능을 접었습니다.</strong> 각 경로가 남기는 다음 배치의
+  가치를 미리 계산해 주려 했는데, 3쿠션에서 명목상 가장 좋다던 경로(0.72)를 실제 실수 범위로
+  8번씩 쳐 보니 <strong>0.35</strong>로, 가장 나쁘다던 경로(0.20 → 0.35)와 같았습니다. 0.58짜리는
+  꼴찌였습니다. 순서에 정보가 없으면 그건 조언이 아니라 장식입니다. 대신 공이 멈춘 자리에서
+  다음 공을 처음부터 다시 계산하는 <b>다음 공 보기</b>를 넣었습니다 — 실제로 선 자리가 다르면 공을
+  옮겨 맞추면 됩니다.</p>
+  <p class="src">근거: <code>README.md</code> · 경로별 명목/실측 비교표</p>
+</div>
+
+<h2>종목마다 얼마나 다른가</h2>
+<p class="lead">13종목을 넣으면서 각각이 실제로 얼마나 어려운지 같은 잣대로 재 봤습니다.</p>
+
+<div class="item">
+  <span class="n">58 · 40 · 30 · 18 · 4 <span class="unit">%</span></span>
+  <p><strong>같은 배치 8개를 다섯 개의 포켓 당구대에 비율로 옮겨</strong> 놓고 탐색한 최고 경로
+  확률의 평균입니다. 순서대로 포켓볼(9피트) · 영국식(7피트) · 중국식(9피트) · 스누커(12피트) ·
+  러시안 피라미드(12피트). 스누커는 피라미드보다 포켓이 넓은데도 영국식보다 어렵습니다 —
+  <strong>포켓 크기만이 아니라 거리가 그만큼 일을 합니다.</strong></p>
+  <p class="src">근거: <code>README.md</code> · 당구대별 비교 측정</p>
+</div>
+
+<div class="item">
+  <span class="n">6.4%</span>
+  <p><strong>5핀 초구는 열에 아홉이 무효입니다.</strong> 초구 배치에서 4가지 세기 × 1,440방향 =
+  5,760번을 쳐 보니, 규칙대로 상대 수구를 먼저 맞힌 건 <strong>368개(6.4%)</strong>뿐이었습니다.
+  게다가 <strong>1,005번은 내 수구가 핀을 쓰러뜨려 상대에게 점수를 줬습니다.</strong></p>
+  <p class="src">근거: <code>README.md</code> · 5핀 스윕</p>
+</div>
+
+<div class="item">
+  <span class="n">12 <span class="unit">mm</span></span>
+  <p><strong>5핀에서 10점(빨간 핀 단독)이 왜 그렇게 어려운지</strong>를 규격으로 따져 본 값입니다.
+  흰 핀은 가운데에서 사방 66mm에 서 있어서 대각선으로 들어오는 공은 흰 핀에서 46.7mm를 지나가는데,
+  핀을 건드리려면 중심 34.25mm 안으로 들어가야 합니다. 남는 틈이 <strong>12mm</strong> —
+  테이블 길이만큼 굴러와서 말입니다.</p>
+  <p class="src">근거: <code>README.md</code> · 엔진 테스트가 12~13mm로 고정</p>
+</div>
+
+<h2>내가 만든 버그를 숫자로 잡은 것</h2>
+<p class="lead">"고쳤습니다"는 증거가 아닙니다. 고치기 전과 후를 재야 증거입니다.</p>
+
+<div class="item">
+  <span class="n">0.006 → 0.833</span>
+  <p><strong>붙은 공에서 두께 조언이 거의 정확히 반대였습니다.</strong> 사용자가 알려 준 배치를
+  엔진에 그대로 넣어 보니, 1위로 추천하던 샷의 두께가 <strong>0.006</strong>(가장 얇게 스치라)
+  이었습니다. 실제로는 거의 꽉 채워 쳐야 하는 배치였고, 고친 뒤 같은 자리에서
+  <strong>0.833</strong>(8분의 7)이 나옵니다. 같은 배치에서 "아주 얇게"라고 적힌 카드가
+  39개 중 30개에서 38개 중 3개로 줄었습니다.</p>
+  <p class="src">근거: <code>docs/버그-점검.md</code> · 재현 배치 <code>L 1000,700 1043,743 2100,400 W</code></p>
+</div>
+
+<div class="item">
+  <span class="n">149 <span class="unit">/ 360 (41%)</span></span>
+  <p><strong>배치를 저장했다 불러오면 공이 서로 파고들어 있었습니다.</strong> 규칙상 합법인
+  "붙은 공" 한 쌍을 360가지 방향으로 돌려 가며 저장·복원해 보니 <strong>149개(41%)가 겹친 채로</strong>
+  돌아왔습니다. 좌표를 밀리미터 단위로 반올림하면서 최대 1.41mm까지 가까워지는데, 코덱이 그걸
+  허용만 하고 밀어내지 않았기 때문입니다.</p>
+  <p class="src">근거: <code>docs/버그-점검.md</code></p>
+</div>
+
+<div class="item">
+  <span class="n">0 → 9</span>
+  <p><strong>스누커는 랙에서 아무 답도 못 내놓고 있었습니다.</strong> 공을 세워 놓고 찾기를
+  누르면 결과가 0개였고, 레드 15개를 하나씩 지정해 봐도 14개가 0개, 브레이크를 친 뒤에도
+  다섯 번 중 다섯 번이 0개였습니다. 같은 22개 랙에서 레드 하나만 열린 자리로 끌어내면 37개가
+  나왔으니 테이블도 공 개수도 문제가 아니었습니다 — <strong>"레드 아무거나"라는 규칙을
+  "1번 레드 하나"로 좁혀 놨던 것</strong>이 원인이었습니다. 고친 뒤 랙에서 <strong>9개</strong>,
+  브레이크 뒤 39·5·42개가 나옵니다.</p>
+  <p class="src">근거: <code>README.md</code> · 종목별 점검 (2026-09-24)</p>
+</div>
+
+<div class="item">
+  <span class="n">10개 중 8개</span>
+  <p><strong>러시안 피라미드의 절반을 파울로 세고 있었습니다.</strong> 이 종목은 내가 친 공이
+  다른 공을 맞힌 뒤라면 그 공이 들어가도 득점입니다(스보이). 앱은 그걸 전부 파울로 처리하고
+  있었고, 고친 뒤 같은 배치에서 <strong>상위 10개 경로 중 8개가 스보이</strong>였습니다 —
+  그 8개가 통째로 버려지고 있었다는 뜻입니다.</p>
+  <p class="src">근거: <code>README.md</code> · 피라미드 스보이</p>
+</div>
+
+<h2>확률을 어떻게 세는가</h2>
+
+<div class="item">
+  <span class="n">0.1 <span class="unit">mm</span></span>
+  <p><strong>브레이크로 몇 개가 들어갈지는 알려 주지 않습니다. 알 수가 없기 때문입니다.</strong>
+  같은 샷으로 랙을 <strong>0.1mm</strong>만 다르게 세우면 빠진 개수가 0~2개로 갈리고 1번 공이
+  테이블 반대편에 섭니다. 그래서 앱은 예측 대신, 당신이 친 그 브레이크를 120번 다시 쳐 보고
+  <strong>이번 게 그중 얼마나 흔한 결과였는지</strong>를 알려 줍니다.</p>
+  <p class="src">근거: <code>README.md</code> · <code>tool/break_probe.dart</code></p>
+</div>
+
+<div class="item">
+  <span class="n">4등 34% · 19등 5%</span>
+  <p><strong>마세(찍어치기)에 가산점을 주지 않습니다.</strong> 같은 탐색으로, 상대 공이 바로
+  앞을 막은 배치에서는 마세가 <strong>4등(34%)</strong>으로 올라오고, 뚫린 배치에서는
+  <strong>19등(5%)</strong>으로 내려갑니다. 마세에게 후보 자리는 따로 주지만 확률은 평범한 샷과
+  똑같이 계산합니다. 순서는 오직 확률이 만듭니다.</p>
+  <p class="src">근거: <code>README.md</code> · 마세 랭킹 측정</p>
+</div>
+
+<div class="item">
+  <span class="n">4,000 <span class="unit">배치 · 겹침 0</span></span>
+  <p><strong>공이 서로 파고들지 않는다는 걸 무식하게 확인했습니다.</strong> 쿠션과 구석에
+  공을 억지로 밀어 넣은 배치 4,000개에서 겹친 쌍 0개, 테이블 밖으로 나간 공 0개. 가장 빡빡했던
+  쌍이 중심 간 61.5010mm — 공 지름 61.50mm에서 <strong>0.001mm 여유</strong>로, 최악의 경우에도
+  붙기만 하고 파고들지는 않습니다.</p>
+  <p class="src">근거: <code>docs/버그-점검.md</code></p>
+</div>
+
+<p class="note">이 앱의 물리 엔진은 AI가 설계하고 구현했습니다. 다만 칠 때 돌아가는 건 학습
+모델이 아니라 물리 계산이고, 그 계산이 맞는지는 <strong>900개가 넘는 자동 테스트</strong>로 확인합니다.
+위 숫자들이 그 과정에서 나온 것들입니다.</p>
+
+<h2>여기 없는 것</h2>
+<p>확률이 <em>맞는지</em>는 아직 실제 당구대에서 대규모로 검증하지 않았습니다. 위 숫자는 전부
+엔진 안에서 잰 값이고, 물리 모델 자체가 틀렸다면 같이 틀립니다. 그래서 앱에
+<strong>내 당구대에 맞추기</strong>를 넣었습니다 — 기준 샷 몇 개로 그 테이블의 쿠션 반발과 천
+속도를 맞추면, 적어도 당신 앞의 당구대에 대해서는 계산이 맞아 들어갑니다.</p>
+
+<footer>
+  <a href="index.html">빌리어드 코치</a> ·
+  <a href="privacy.html">개인정보처리방침 · Privacy Policy</a><br>
+  문의: <a href="mailto:hello.seungholee@gmail.com">hello.seungholee@gmail.com</a>
+</footer>
+
+</main>
+</body>
+</html>

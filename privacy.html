@@ -34,7 +34,7 @@
 
 <header>
   <h1>빌리어드 코치 개인정보처리방침</h1>
-  <p class="sub">최종 수정일: 2026년 9월 29일 · 앱 버전 1.0.0</p>
+  <p class="sub">최종 수정일: 2026년 10월 11일 · 앱 버전 1.0.0</p>
 </header>
 
 <p>빌리어드 코치(이하 "앱")는 개인을 식별할 수 있는 정보를 수집하지 않습니다. 회원가입이 없고,
@@ -54,10 +54,13 @@
   <li>하트·다이아 잔액과 충전 시각, 프리미엄 보유 여부</li>
   <li>하트 충전 시간을 확인하려고 적어 두는 시계 기록 (안드로이드: 휴대폰이 켜진 뒤 흐른 시간과 켜진 횟수)</li>
   <li>별점 요청을 언제 띄울지 정하려고 세는 공략 찾기 횟수와 앱을 처음 연 날짜</li>
+  <li>다이아 옮기기 기록: 이 휴대폰에서 만든 마지막 코드, 받은 코드마다 앱이 만든 무작위 열쇠, 환불을 마지막으로 확인한 시각</li>
 </ul>
 
 <div class="note">
-  앱을 삭제하면 위 정보는 휴대폰에서 함께 삭제됩니다. 별도의 백업이나 서버 동기화는 없습니다.
+  앱을 삭제하면 위 정보는 휴대폰에서 함께 삭제됩니다. 클라우드 백업이나 서버 동기화는 없습니다.
+  다만 안드로이드의 '새 휴대폰으로 데이터 옮기기'(새 휴대폰을 처음 켤 때 옛 휴대폰에서 복사)를 쓰면, 사용자의 새 휴대폰으로
+  그대로 복사됩니다.
 </div>
 
 <h2>2. 제3자가 처리하는 것</h2>
@@ -84,30 +87,41 @@
     <td>앱 운영자의 서버(Supabase, 서울 리전)</td>
     <td>앱에서 난 오류를 찾아 고치기 위해. 기기 식별자 · 광고 ID · 결제 정보 · 공 배치는 담지 않으며, IP 주소도 저장하지 않습니다. 같은 오류는 하루 한 줄로 횟수만 셉니다.</td>
   </tr>
+  <tr>
+    <td>다이아 옮기기: 코드, 옮길 다이아 개수, 이 휴대폰에서 산 결제의 구매 토큰 해시, 받은 코드의 무작위 열쇠</td>
+    <td>앱 운영자의 서버(Supabase, 서울 리전)</td>
+    <td>사용자가 지갑에서 '다이아 옮기기'를 누를 때에만, 산 다이아를 다른 휴대폰으로 옮기기 위해</td>
+  </tr>
+  <tr>
+    <td>환불 확인: 이 휴대폰에서 산 결제의 구매 토큰 해시</td>
+    <td>앱 운영자의 서버(Supabase, 서울 리전)</td>
+    <td>환불(취소)된 결제의 다이아와 프리미엄을 회수하기 위해. 이 휴대폰에서 산 것이 있을 때에만, 앱을 켤 때 최대 한 시간에 한 번 물어봅니다.</td>
+  </tr>
 </table>
 
-<h3>검증 서버가 저장하는 것</h3>
+<h3>서버가 저장하는 것</h3>
 
-<p>검증 서버는 구매 토큰의 <strong>원문을 저장하지 않습니다.</strong> 저장하는 항목은 다음 다섯 가지뿐입니다.</p>
+<p>서버는 구매 토큰, 코드, 열쇠의 <strong>원문을 저장하지 않습니다.</strong> 저장하는 것은 다음뿐입니다.</p>
 
 <ul>
-  <li>구매 토큰의 <code>SHA-256</code> 해시 (원문 복원 불가)</li>
-  <li>상품 ID (예: <code>diamonds_10</code>)</li>
-  <li>스토어 주문 ID</li>
-  <li>플랫폼 (<code>android</code> 또는 <code>ios</code>)</li>
-  <li>검증 시각</li>
+  <li><strong>결제 검증 기록</strong>: 구매 토큰의 <code>SHA-256</code> 해시(원문 복원 불가), 상품 ID(예: <code>diamonds_10</code>),
+      스토어 주문 ID, 플랫폼(<code>android</code> 또는 <code>ios</code>), 검증 시각</li>
+  <li><strong>다이아 옮기기 기록</strong>: 코드의 <code>SHA-256</code> 해시, 다이아 개수, 만든·받은·취소한 시각,
+      그 코드에 쓰인 결제(구매 토큰 해시), 코드를 받은 휴대폰이 만든 무작위 열쇠의 해시</li>
+  <li><strong>환불된 결제 목록</strong>: Google Play가 환불·취소한 결제의 구매 토큰 해시, 주문 ID, 환불 시각
+      (Google Play에서 받아 옵니다)</li>
 </ul>
 
 <p>이 기록만으로는 어떤 개인이 무엇을 샀는지 알 수 없습니다. 이름·이메일·기기 식별자·광고 ID는
-전송되지도, 저장되지도 않습니다. 이 표는 앱에서 읽을 수 없도록 잠겨 있으며, 검증 함수만 접근합니다.</p>
+전송되지도, 저장되지도 않습니다. 이 표들은 앱에서 읽을 수 없도록 잠겨 있으며, 서버의 함수만 접근합니다.</p>
 
-<p>결제 확인 서버는 요청이 한꺼번에 몰리는 것을 막으려고, 요청한 곳의 인터넷 주소(IP)를 비밀 값으로 섞어 되돌릴 수
+<p>서버는 요청이 한꺼번에 몰리는 것을 막으려고, 요청한 곳의 인터넷 주소(IP)를 비밀 값으로 섞어 되돌릴 수
 없게 만든 값을 약 10분 동안만 보관한 뒤 자동으로 지웁니다. 인터넷 주소 자체는 저장하지 않습니다.</p>
 
 <h2>3. 앱이 요구하는 권한</h2>
 
 <ul>
-  <li><strong>인터넷</strong> · <strong>네트워크 상태</strong> — 광고를 불러오고 결제를 확인하기 위해</li>
+  <li><strong>인터넷</strong> · <strong>네트워크 상태</strong> — 광고를 불러오고, 결제와 환불을 확인하고, 다이아를 옮기기 위해</li>
   <li><strong>광고 ID</strong>(<code>AD_ID</code>) 및 구글 <em>Privacy Sandbox</em> 관련 권한
       (<code>ACCESS_ADSERVICES_AD_ID</code> · <code>_ATTRIBUTION</code> · <code>_TOPICS</code>)
       — Google AdMob SDK가 포함하는 것으로, 위 2절에 적은 광고 식별자를 쓰기 위한 것입니다</li>
@@ -131,6 +145,9 @@
   <li><strong>기기 데이터</strong>: 앱 삭제 시 함께 삭제됩니다. 앱 안에서 ︙ → 기본 배치로 를 누르면 배치가 초기화됩니다.</li>
   <li><strong>검증 기록(해시)</strong>: 중복 사용 방지라는 목적상 보관합니다. 개인을 식별하지 않으므로
       특정인의 기록을 지정해 삭제하기 어렵습니다. 스토어 주문 ID를 알려 주시면 해당 기록을 삭제해 드립니다.</li>
+  <li><strong>다이아 옮기기 기록 · 환불된 결제 목록(해시)</strong>: 같은 결제가 두 번 옮겨지거나 환불된 다이아가 다시
+      쓰이는 것을 막는 목적상 보관합니다. 받지 않은 코드는 사용 기한 없이 보관합니다. 코드를 알려 주시면 그 코드의 기록을
+      취소할 수 있습니다.</li>
   <li><strong>오류 기록</strong>: 90일 뒤 자동으로 삭제됩니다. 누구의 기록인지 알 수 없어 특정인의 기록을 골라 지울 수는 없습니다.</li>
   <li><strong>광고 식별자</strong>: 안드로이드 설정 → 개인정보 보호 → 광고 에서 언제든 재설정하거나 삭제할 수 있습니다.</li>
 </ul>
@@ -151,7 +168,7 @@
 <!-- ============================ English ============================ -->
 <div class="lang">
 <h1>Billiard Coach Privacy Policy</h1>
-<p class="sub">Last updated: 29 September 2026 · App version 1.0.0</p>
+<p class="sub">Last updated: 11 October 2026 · App version 1.0.0</p>
 
 <p>Billiard Coach (the "app") collects no personally identifiable information. There is no
 sign-up and no account; the app never asks for your name, email, phone number, location,
@@ -169,8 +186,12 @@ information, described in full below.</p>
       switched on, and how many times it has been)</li>
   <li>How many answers you have had and the day you first opened the app, to time the store's
       rating request</li>
+  <li>Diamond moves: the last code made on this phone, a random key the app made for each code it
+      took, and when refunds were last checked</li>
 </ul>
-<p>None of this leaves the phone, and uninstalling the app deletes it.</p>
+<p>None of this leaves the phone, and uninstalling the app deletes it. There is no cloud backup
+or server sync — except that Android's "copy apps and data", when you set up a new phone from the
+old one, copies it to your new phone.</p>
 
 <h2>2. Processed by third parties</h2>
 <table>
@@ -195,19 +216,36 @@ information, described in full below.</p>
     <td>The developer's server (Supabase, Seoul region)</td>
     <td>To find and fix errors in the app. They carry no device identifier, advertising ID, payment data or ball positions, and no IP address is stored. The same error is kept as one line per day with a count.</td>
   </tr>
+  <tr>
+    <td>Diamond moves: the code, how many diamonds, hashes of the purchase tokens of what was bought on this phone, the random key of a code taken</td>
+    <td>The developer's server (Supabase, Seoul region)</td>
+    <td>Only when you tap "Move diamonds" in the wallet: to take the diamonds you bought to another phone</td>
+  </tr>
+  <tr>
+    <td>Refund check: hashes of the purchase tokens of what was bought on this phone</td>
+    <td>The developer's server (Supabase, Seoul region)</td>
+    <td>To take back the diamonds and Premium of a purchase that was refunded or cancelled. Asked only if something was bought on this phone, at most once an hour when the app opens.</td>
+  </tr>
 </table>
 
-<p>The verification server does <strong>not</strong> store the purchase token itself. It stores
-only a <code>SHA-256</code> hash of it, the product ID, the store order ID, the platform
-(<code>android</code> or <code>ios</code>) and a timestamp. No name, email, device identifier or
-advertising ID is sent to or stored on that server.</p>
+<p>The server does <strong>not</strong> store purchase tokens, codes or keys themselves. It stores only:</p>
+<ul>
+  <li><strong>Verification records</strong>: a <code>SHA-256</code> hash of the purchase token, the product ID, the
+      store order ID, the platform (<code>android</code> or <code>ios</code>) and a timestamp</li>
+  <li><strong>Diamond moves</strong>: a <code>SHA-256</code> hash of each code, how many diamonds, when it was made,
+      taken or cancelled, the purchases behind it (token hashes), and a hash of the random key of the phone that
+      took it</li>
+  <li><strong>Refunded purchases</strong>: token hashes, order IDs and refund times of the purchases Google Play
+      refunded or cancelled (fetched from Google Play)</li>
+</ul>
+<p>No name, email, device identifier or advertising ID is sent to or stored on that server.</p>
 
-<p>To stop the purchase-check server from being flooded, it keeps a salted, irreversible hash of the
+<p>To stop the server from being flooded, it keeps a salted, irreversible hash of the
 caller's IP address for about ten minutes and then deletes it automatically. The IP address itself
 is never stored.</p>
 
 <h2>3. Permissions</h2>
-<p>Internet and network state, for ads and purchase verification. The Google AdMob SDK also
+<p>Internet and network state, for ads, purchase and refund checks, and moving diamonds. The Google AdMob SDK also
 declares the advertising-ID permission (<code>AD_ID</code>) and Google's Privacy Sandbox
 permissions, for the advertising identifier described in section 2, and Google Play services
 declare <code>WAKE_LOCK</code> and <code>FOREGROUND_SERVICE</code>. None of these prompt you:
@@ -226,6 +264,9 @@ reports described in section 2 to the developer's own server.</p>
   <li><strong>Device data</strong>: deleted when you uninstall the app.</li>
   <li><strong>Verification records</strong>: kept, because preventing re-use is their purpose. They
       identify no one. Send your store order ID and the matching record will be deleted.</li>
+  <li><strong>Diamond moves and refunded purchases (hashes)</strong>: kept, to stop one purchase being moved
+      twice or refunded diamonds being used again. A code not yet taken is kept with no expiry; send us the
+      code and it can be cancelled.</li>
   <li><strong>Error reports</strong>: deleted automatically after 90 days. They identify no one, so one
       person's reports cannot be picked out and deleted.</li>
   <li><strong>Advertising ID</strong>: you can reset or delete it in Android
